@@ -110,7 +110,7 @@ function Hero() {
   const jumps = [
     { label:"AI Agents", target:"agents" },
     { label:"Experience", target:"career" },
-    { label:"Salesforce", target:"salesforce" },
+    { label:"Featured Experience", target:"salesforce" },
     { label:"Skills", target:"skills" },
   ];
   return (
