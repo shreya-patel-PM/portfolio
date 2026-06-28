@@ -14,9 +14,9 @@ const DOMAIN_LABELS = { streaming: "Streaming", pm: "Product Mgmt", pharma: "Pha
 const SHREYA_CONTEXT = `You are Shreya Patel's portfolio AI assistant. Answer questions conversationally and confidently — as her professional representative. Keep answers concise (2-4 sentences) unless detail is requested.
 
 CRITICAL RULES:
-- Only 3 agents are SHIPPED and live. The other 18 are PLANNED but NOT yet built.
+- 9 agents are SHIPPED and live. The other 12 are PLANNED but NOT yet built.
 - NEVER describe a planned agent as if it is complete or shipped.
-- If asked "what has she shipped," ONLY mention the 3 shipped agents below.
+- If asked "what has she shipped," ONLY mention the 9 shipped agents below.
 
 CURRENT ROLE: Senior Product Manager at Eli Lilly (Cancer Clinical Platform). Building StreamMind — a 22-week project to ship 21 AI agents (reduced from 24 for depth over breadth). Currently Week 7 of 22.
 
@@ -32,8 +32,14 @@ STREAMMIND: 21 agents total — 11 streaming, 3 ad-revenue, 5 PM, 1 pharma, 1 pr
 1. Grooming Bot (PM #1) — JIRA story grooming. LLM: Claude Sonnet, Framework: Make, No RAG. Shipped Week 3.
 2. Research Synthesizer (PM #2) — Research to product insights. LLM: Claude Sonnet, Framework: Make+Streamlit, No RAG. Shipped Week 6.
 3. Monday Weekly Digest (Streaming #13) — Weekly email digest. LLM: Claude Sonnet, Framework: Make, No RAG. Shipped Week 6.
+4. Content Tagging (Streaming #1) — Auto-tags catalog titles with genre/mood/audience metadata. LLM: Claude Sonnet, Framework: Make. Shipped Week 8.
+5. Copy Generator (Streaming #2) — Generates 6 marketing copy variants from content briefs. LLM: Claude Sonnet, Framework: Make. Shipped Week 9.
+6. Subtitle QA (Streaming #3) — SRT file quality validation. LLM: Claude Haiku, Framework: Make. Shipped Week 11.
+7. A/B Test Analyzer (Streaming #8) — Experiment analysis memos from Sheets data. LLM: Claude Sonnet, Framework: Make. Shipped Week 8.
+8. Licensing Monitor (Streaming #9) — Contract renewal briefs on Monday schedule. LLM: Claude Sonnet, Framework: Make. Shipped Week 10.
+9. PRD Studio (PM #3) — Multi-mode PRD generator: brief → outline → full doc. LLM: Claude Sonnet, Framework: Make. Shipped Week 12.
 
-18 PLANNED (NOT yet built): target all 21 by September 2026. Cut 3 agents from original 24 plan (release readiness, localization brief, compliance watch) for redundancy — chose depth over breadth.
+12 PLANNED (NOT yet built): target all 21 by September 2026.
 
 WORK: Eli Lilly Sr PM Jan 2026–Present, T-Mobile Sr PO (27% adoption↑), J&J PO, CVS Aetna PM (100% migration), Salesforce PO (60K users, 40% adoption↑), MUFG PO, Stylekart Analyst.
 
@@ -51,14 +57,14 @@ If unsure, say so and suggest emailing her directly.`;
 
 const AGENTS = [
   // ── Streaming (11) ──
-  {id:1,name:"Content Tagging",domain:"streaming",desc:"Auto-tags catalog titles with genre, mood, and audience metadata via structured JSON",stack:"Airtable catalog → Make → Claude tags as JSON → Airtable writeback",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Tag accuracy vs human baseline",framework:"Make"},
-  {id:2,name:"Copy Generator",domain:"streaming",desc:"Generates 6 marketing copy variants from a content brief",stack:"Notion brief → Make → Claude 6 variants JSON → Notion + Slack #copy-review",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Variant quality + tone consistency",framework:"Make"},
-  {id:3,name:"Subtitle QA",domain:"streaming",desc:"Watches for new SRT files and validates quality automatically",stack:"Google Drive SRT watcher → Make → Claude QA → Airtable error log + Slack",shipped:false,llm:"Claude Haiku",rag:false,evals:"Error detection accuracy",framework:"Make"},
+  {id:1,name:"Content Tagging",domain:"streaming",desc:"Auto-tags catalog titles with genre, mood, and audience metadata via structured JSON",stack:"Airtable catalog → Make → Claude tags as JSON → Airtable writeback",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Tag accuracy vs human baseline",framework:"Make"},
+  {id:2,name:"Copy Generator",domain:"streaming",desc:"Generates 6 marketing copy variants from a content brief",stack:"Notion brief → Make → Claude 6 variants JSON → Notion + Slack #copy-review",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Variant quality + tone consistency",framework:"Make"},
+  {id:3,name:"Subtitle QA",domain:"streaming",desc:"Watches for new SRT files and validates quality automatically",stack:"Google Drive SRT watcher → Make → Claude QA → Airtable error log + Slack",shipped:true,llm:"Claude Haiku",rag:false,evals:"Error detection accuracy",framework:"Make"},
   {id:4,name:"Churn Risk Scorer",domain:"streaming",desc:"Scores subscribers on churn risk from engagement signals, triggers retention emails",stack:"Subscriber sheet → Make → Claude risk scoring → Mailchimp retention email",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Precision/recall on churn labels",framework:"Make"},
   {id:5,name:"Win-Back Campaign",domain:"streaming",desc:"Generates personalized re-engagement sequences for churned users",stack:"Airtable cancellation log → Make → Claude → Mailchimp journey",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Open rate + reactivation tracking",framework:"Make"},
   {id:6,name:"Content Gap Analyzer",domain:"streaming",desc:"Identifies missing content categories by analyzing search queries",stack:"Query data → Make → Claude gap report → Notion",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Gap relevance scoring",framework:"Make"},
-  {id:7,name:"A/B Test Analyzer",domain:"streaming",desc:"Reads experiment results from Sheets and generates analysis memos",stack:"Sheets trigger → Make → Claude analysis JSON → Notion memo + Slack",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Statistical conclusion accuracy",framework:"Make"},
-  {id:8,name:"Licensing Monitor",domain:"streaming",desc:"Monitors content contracts and generates renewal briefs",stack:"Airtable contracts → Make Monday scheduler → Claude renewal brief → Gmail + Slack",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Date accuracy + brief completeness",framework:"Make"},
+  {id:7,name:"A/B Test Analyzer",domain:"streaming",desc:"Reads experiment results from Sheets and generates analysis memos",stack:"Sheets trigger → Make → Claude analysis JSON → Notion memo + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Statistical conclusion accuracy",framework:"Make"},
+  {id:8,name:"Licensing Monitor",domain:"streaming",desc:"Monitors content contracts and generates renewal briefs",stack:"Airtable contracts → Make Monday scheduler → Claude renewal brief → Gmail + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Date accuracy + brief completeness",framework:"Make"},
   {id:9,name:"Monday Weekly Digest",domain:"streaming",desc:"Automated weekly content digest delivered every Monday via email",stack:"Make Monday 7am → Google Sheets data → Claude 300-word digest → Gmail",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Content accuracy + formatting",framework:"Make"},
   {id:10,name:"Rec Eval Agent",domain:"streaming",desc:"Evaluates recommendation engine outputs against viewing history",stack:"Rec API output → Make → Claude relevance scoring → Airtable report",shipped:false,llm:"Claude Sonnet",rag:true,evals:"NDCG + relevance scoring",framework:"Make"},
   {id:11,name:"Personalized Digest",domain:"streaming",desc:"Per-subscriber personalized content digests based on watch history",stack:"User profiles → Make → Claude personalization → Email delivery",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Personalization relevance + engagement",framework:"Make"},
@@ -69,7 +75,7 @@ const AGENTS = [
   // ── PM (5) ──
   {id:15,name:"Grooming Bot",domain:"pm",desc:"Automates JIRA story grooming with acceptance criteria, edge cases & sizing",stack:"JIRA webhook → Make → Claude structured generation → JIRA update",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Output quality + edge case coverage",framework:"Make"},
   {id:16,name:"Research Synthesizer",domain:"pm",desc:"Structures research transcripts into product insights and recommendations",stack:"Google Drive transcripts → Make → Claude synthesis → Streamlit dashboard",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Insight relevance + completeness",framework:"Make + Streamlit"},
-  {id:17,name:"PRD Studio",domain:"pm",desc:"Multi-mode PRD generator: brief → outline → full doc with edge cases and metrics",stack:"Notion brief → Make → Claude multi-pass → Notion PRD + Slack",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Completeness + section quality scoring",framework:"Make"},
+  {id:17,name:"PRD Studio",domain:"pm",desc:"Multi-mode PRD generator: brief → outline → full doc with edge cases and metrics",stack:"Notion brief → Make → Claude multi-pass → Notion PRD + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Completeness + section quality scoring",framework:"Make"},
   {id:18,name:"Competitive Intel Hub",domain:"pm",desc:"Weekly competitive landscape digest with strategic implications",stack:"GitHub Actions Monday cron → Claude web_search → Resend digest",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Source coverage + insight quality",framework:"GitHub Actions"},
   {id:19,name:"PM Copilot",domain:"pm",desc:"Multi-agent orchestration for end-to-end PM decision support",stack:"CrewAI (Researcher/Writer/Reviewer) + Notion + Slack Bolt + Supabase memory",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Decision quality + agent coordination",framework:"CrewAI + Supabase",flagship:true},
   // ── Pharma (1) ──
