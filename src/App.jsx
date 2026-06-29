@@ -14,13 +14,13 @@ const DOMAIN_LABELS = { streaming: "Streaming", pm: "Product Mgmt", pharma: "Pha
 const SHREYA_CONTEXT = `You are Shreya Patel's portfolio AI assistant. Answer questions conversationally and confidently — as her professional representative. Keep answers concise (2-4 sentences) unless detail is requested.
 
 CRITICAL RULES:
-- 9 agents are SHIPPED and live. The other 12 are PLANNED but NOT yet built.
+- 11 agents are SHIPPED and live. The other 9 are PLANNED but NOT yet built.
 - NEVER describe a planned agent as if it is complete or shipped.
-- If asked "what has she shipped," ONLY mention the 9 shipped agents below.
+- If asked "what has she shipped," ONLY mention the 11 shipped agents below.
 
-CURRENT ROLE: Senior Product Manager at Eli Lilly (Cancer Clinical Platform). Building StreamMind — a 22-week project to ship 21 AI agents (reduced from 24 for depth over breadth). Currently Week 7 of 22.
+CURRENT ROLE: Senior Product Manager at Eli Lilly (Cancer Clinical Platform). Building StreamMind — a 22-week project to ship 20 AI agents (reduced from 24 for depth over breadth). Currently Week 10 of 22.
 
-STREAMMIND: 21 agents total — 11 streaming, 3 ad-revenue, 5 PM, 1 pharma, 1 product (AutoApply). 4 are FLAGSHIP-grade with full evals, architecture docs, guardrails, and cost analysis. Stack: Claude API, Make, Airtable, Notion, Supabase, CrewAI, Streamlit, Vercel, GitHub Actions, Next.js.
+STREAMMIND: 20 agents total — 10 streaming, 3 ad-revenue, 5 PM, 1 pharma, 1 product (AutoApply). 4 are FLAGSHIP-grade with full evals, architecture docs, guardrails, and cost analysis. Stack: Claude API, Make, Airtable, Notion, Supabase, CrewAI, Streamlit, Vercel, GitHub Actions, Next.js.
 
 4 FLAGSHIPS (deep architecture + evals + guardrails):
 1. AutoApply — Ghost job detection SaaS. Next.js + Supabase + Claude classification. Full F1 eval, adversarial benchmark, GUARDRAILS.md.
@@ -67,21 +67,21 @@ const AGENTS = [
   {id:8,name:"Licensing Monitor",domain:"streaming",desc:"Monitors content contracts and generates renewal briefs",stack:"Airtable contracts → Make Monday scheduler → Claude renewal brief → Gmail + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Date accuracy + brief completeness",framework:"Make"},
   {id:9,name:"Monday Weekly Digest",domain:"streaming",desc:"Automated weekly content digest delivered every Monday via email",stack:"Make Monday 7am → Google Sheets data → Claude 300-word digest → Gmail",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Content accuracy + formatting",framework:"Make"},
   {id:10,name:"Rec Eval Agent",domain:"streaming",desc:"Evaluates recommendation engine outputs against viewing history",stack:"Rec API output → Make → Claude relevance scoring → Airtable report",shipped:false,llm:"Claude Sonnet",rag:true,evals:"NDCG + relevance scoring",framework:"Make"},
-  {id:11,name:"Personalized Digest",domain:"streaming",desc:"Per-subscriber personalized content digests based on watch history",stack:"User profiles → Make → Claude personalization → Email delivery",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Personalization relevance + engagement",framework:"Make"},
+
   // ── Ad Revenue (3) ──
-  {id:12,name:"Ad Incrementality Brief",domain:"ads",desc:"Generates incrementality lift reports — deterministic stats calc with LLM narration",stack:"Experiment data → Python lift math → Claude narrative → Notion report",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Lift accuracy + narrative quality",framework:"Make + Python",flagship:true},
-  {id:13,name:"Contextual Ad Slate Matcher",domain:"ads",desc:"Matches ad inventory to content context for optimal slate placement",stack:"Content metadata + ad catalog → Make → Claude matching → Airtable slate",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Relevance scoring + fill rate",framework:"Make"},
-  {id:14,name:"Ad Creative Variant Generator",domain:"ads",desc:"Generates ad copy variants tailored to content and audience segments",stack:"Campaign brief → Make → Claude variants → Slack #ad-review",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Brand safety + variant diversity",framework:"Make"},
+  {id:11,name:"Ad Incrementality Brief",domain:"ads",desc:"Generates incrementality lift reports — deterministic stats calc with LLM narration",stack:"Experiment data → Python lift math → Claude narrative → Notion report",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Lift accuracy + narrative quality",framework:"Make + Python",flagship:true},
+  {id:12,name:"Contextual Ad Slate Matcher",domain:"ads",desc:"Matches ad inventory to content context for optimal slate placement",stack:"Content metadata + ad catalog → Make → Claude matching → Airtable slate",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Relevance scoring + fill rate",framework:"Make"},
+  {id:13,name:"Ad Creative Variant Generator",domain:"ads",desc:"Generates ad copy variants tailored to content and audience segments",stack:"Campaign brief → Make → Claude variants → Slack #ad-review",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Brand safety + variant diversity",framework:"Make"},
   // ── PM (5) ──
-  {id:15,name:"Grooming Bot",domain:"pm",desc:"Automates JIRA story grooming with acceptance criteria, edge cases & sizing",stack:"JIRA webhook → Make → Claude structured generation → JIRA update",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Output quality + edge case coverage",framework:"Make"},
-  {id:16,name:"Research Synthesizer",domain:"pm",desc:"Structures research transcripts into product insights and recommendations",stack:"Google Drive transcripts → Make → Claude synthesis → Streamlit dashboard",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Insight relevance + completeness",framework:"Make + Streamlit"},
-  {id:17,name:"PRD Studio",domain:"pm",desc:"Multi-mode PRD generator: brief → outline → full doc with edge cases and metrics",stack:"Notion brief → Make → Claude multi-pass → Notion PRD + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Completeness + section quality scoring",framework:"Make"},
-  {id:18,name:"Competitive Intel Hub",domain:"pm",desc:"Weekly competitive landscape digest with strategic implications",stack:"GitHub Actions Monday cron → Claude web_search → Resend digest",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Source coverage + insight quality",framework:"GitHub Actions"},
-  {id:19,name:"PM Copilot",domain:"pm",desc:"Multi-agent orchestration for end-to-end PM decision support",stack:"CrewAI (Researcher/Writer/Reviewer) + Notion + Slack Bolt + Supabase memory",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Decision quality + agent coordination",framework:"CrewAI + Supabase",flagship:true},
+  {id:14,name:"Grooming Bot",domain:"pm",desc:"Automates JIRA story grooming with acceptance criteria, edge cases & sizing",stack:"JIRA webhook → Make → Claude structured generation → JIRA update",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Output quality + edge case coverage",framework:"Make"},
+  {id:15,name:"Research Synthesizer",domain:"pm",desc:"Structures research transcripts into product insights and recommendations",stack:"Google Drive transcripts → Make → Claude synthesis → Streamlit dashboard",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Insight relevance + completeness",framework:"Make + Streamlit"},
+  {id:16,name:"PRD Studio",domain:"pm",desc:"Multi-mode PRD generator: brief → outline → full doc with edge cases and metrics",stack:"Notion brief → Make → Claude multi-pass → Notion PRD + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Completeness + section quality scoring",framework:"Make"},
+  {id:17,name:"Competitive Intel Hub",domain:"pm",desc:"Weekly competitive landscape digest with strategic implications",stack:"GitHub Actions Monday cron → Claude web_search → Resend digest",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Source coverage + insight quality",framework:"GitHub Actions"},
+  {id:18,name:"PM Copilot",domain:"pm",desc:"Multi-agent orchestration for end-to-end PM decision support",stack:"CrewAI (Researcher/Writer/Reviewer) + Notion + Slack Bolt + Supabase memory",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Decision quality + agent coordination",framework:"CrewAI + Supabase",flagship:true},
   // ── Pharma (1) ──
-  {id:20,name:"Clinical Trial Analyzer",domain:"pharma",desc:"Surfaces eligibility criteria & endpoint data from trial protocol PDFs",stack:"Google Drive PDFs → Make → Claude doc API with citations → Notion + Airtable log",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Extraction accuracy + completeness",framework:"Claude Doc API",flagship:true},
+  {id:19,name:"Clinical Trial Analyzer",domain:"pharma",desc:"Surfaces eligibility criteria & endpoint data from trial protocol PDFs",stack:"Google Drive PDFs → Make → Claude doc API with citations → Notion + Airtable log",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Extraction accuracy + completeness",framework:"Claude Doc API",flagship:true},
   // ── Product (1) ──
-  {id:21,name:"AutoApply",domain:"product",desc:"Ghost job detection SaaS — classifies listings as real vs ghost with F1-scored evals",stack:"Next.js + Supabase + Claude classification → adversarial benchmark (75 examples)",shipped:false,llm:"Claude Sonnet",rag:false,evals:"F1 score at threshold 0.60 + adversarial benchmark",framework:"Next.js + Supabase",flagship:true},
+  {id:20,name:"AutoApply",domain:"product",desc:"Ghost job detection SaaS — classifies listings as real vs ghost with F1-scored evals",stack:"Next.js + Supabase + Claude classification → adversarial benchmark (75 examples)",shipped:false,llm:"Claude Sonnet",rag:false,evals:"F1 score at threshold 0.60 + adversarial benchmark",framework:"Next.js + Supabase",flagship:true},
 ];
 
 const EXPERIENCE = [
