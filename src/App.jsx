@@ -39,7 +39,7 @@ STREAMMIND: 20 agents total — 10 streaming, 3 ad-revenue, 5 PM, 1 pharma, 1 pr
 8. Licensing Monitor (Streaming #9) — Contract renewal briefs on Monday schedule. LLM: Claude Sonnet, Framework: Make. Shipped Week 10.
 9. PRD Studio (PM #3) — Multi-mode PRD generator: brief → outline → full doc. LLM: Claude Sonnet, Framework: Make. Shipped Week 12.
 
-12 PLANNED (NOT yet built): target all 21 by September 2026.
+12 PLANNED (NOT yet built): target all 20 by September 2026.
 
 WORK: Eli Lilly Sr PM Jan 2026–Present, T-Mobile Sr PO (27% adoption↑), J&J PO, CVS Aetna PM (100% migration), Salesforce PO (60K users, 40% adoption↑), MUFG PO, Stylekart Analyst.
 
@@ -168,7 +168,7 @@ function StreamMindSection() {
     <section style={{ padding:"48px 24px", maxWidth:1080, margin:"0 auto" }} id="agents">
       <div style={{ textAlign:"center", marginBottom:28 }}>
         <div style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:13, fontWeight:600, color:T.accent, textTransform:"uppercase", letterSpacing:"0.15em", marginBottom:6 }}>StreamMind</div>
-        <h2 style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:"clamp(24px,4vw,36px)", fontWeight:700, color:T.text, letterSpacing:"-0.03em", margin:"0 0 8px" }}>21 AI Agents · 4 Flagships</h2>
+        <h2 style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:"clamp(24px,4vw,36px)", fontWeight:700, color:T.text, letterSpacing:"-0.03em", margin:"0 0 8px" }}>20 AI Agents · 4 Flagships</h2>
         <p style={{ fontFamily:"'Inter',sans-serif", fontSize:14, color:T.textSec, maxWidth:500, margin:"0 auto 18px" }}>
           trigger → data ingestion → LLM reasoning → structured output → action
         </p>
