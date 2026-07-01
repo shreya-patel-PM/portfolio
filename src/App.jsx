@@ -102,7 +102,7 @@ const jumpTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:"s
 function Hero() {
   const shipped = AGENTS.filter(a => a.shipped).length;
   const stats = [
-    { n:"21", label:"AI Agents", color:T.accent },
+    { n:"20", label:"AI Agents", color:T.accent },
     { n:`${shipped}`, label:"Shipped", color:T.mint },
     { n:"4", label:"Flagships", color:T.coral },
     { n:"10+", label:"Years PM", color:T.amber },
