@@ -14,7 +14,7 @@ const DOMAIN_LABELS = { streaming: "Streaming", pm: "Product Mgmt", pharma: "Pha
 const SHREYA_CONTEXT = `You are Shreya Patel's portfolio AI assistant. Answer questions conversationally and confidently — as her professional representative. Keep answers concise (2-4 sentences) unless detail is requested.
 
 CRITICAL RULES:
-- 10 agents are SHIPPED and live. The other 9 are PLANNED but NOT yet built.
+- 14 agents are SHIPPED and live. The other 5 are PLANNED but NOT yet built.
 - NEVER describe a planned agent as if it is complete or shipped.
 - If asked "what has she shipped," ONLY mention the 9 shipped agents below.
 
@@ -38,9 +38,13 @@ STREAMMIND: 19 agents total — 9 streaming, 3 ad-revenue, 5 PM, 1 pharma, 1 pro
 7. A/B Test Analyzer (Streaming #8) — Experiment analysis memos from Sheets data. LLM: Claude Sonnet, Framework: Make. Shipped Week 8.
 8. Licensing Monitor (Streaming #9) — Contract renewal briefs on Monday schedule. LLM: Claude Sonnet, Framework: Make. Shipped Week 10.
 9. PRD Studio (PM #3) — Multi-mode PRD generator: brief → outline → full doc. LLM: Claude Sonnet, Framework: Make. Shipped Week 12.
-10. GhostCheck (Product) — Ghost job detection SaaS. LLM: Claude Sonnet, Framework: Next.js+Supabase. F1 eval + adversarial benchmark. FLAGSHIP. Shipped Week 13.
+10. GhostCheck (Product, FLAGSHIP) — Ghost job detection SaaS. LLM: Claude Sonnet, Framework: Next.js+Supabase. F1 eval + adversarial benchmark. Shipped Week 13.
+11. Win-Back Campaign (Streaming #5) — Re-engagement sequences for churned users. LLM: Claude Sonnet, Framework: Make. Shipped Week 14.
+12. Content Gap Analyzer (Streaming #6) — Missing content identification via search queries. LLM: Claude Sonnet, Framework: Make, RAG. Shipped Week 14.
+13. Rec Eval Agent (Streaming #10) — Recommendation engine output evaluation. LLM: Claude Sonnet, Framework: Make, RAG. Shipped Week 15.
+14. Competitive Intel Hub (PM #4) — Weekly competitive landscape digest. LLM: Claude Sonnet, Framework: GitHub Actions, RAG. Shipped Week 15.
 
-9 PLANNED (NOT yet built): target all 19 by September 2026.
+5 PLANNED (NOT yet built): target all 19 by September 2026.
 
 WORK: Eli Lilly Sr PM Jan 2026–Present, T-Mobile Sr PO (27% adoption↑), J&J PO, CVS Aetna PM (100% migration), Salesforce PO (60K users, 40% adoption↑), MUFG PO, Stylekart Analyst.
 
@@ -61,12 +65,12 @@ const AGENTS = [
   {id:1,name:"Content Tagging",domain:"streaming",desc:"Auto-tags catalog titles with genre, mood, and audience metadata via structured JSON",stack:"Airtable catalog → Make → Claude tags as JSON → Airtable writeback",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Tag accuracy vs human baseline",framework:"Make"},
   {id:2,name:"Copy Generator",domain:"streaming",desc:"Generates 6 marketing copy variants from a content brief",stack:"Notion brief → Make → Claude 6 variants JSON → Notion + Slack #copy-review",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Variant quality + tone consistency",framework:"Make"},
   {id:3,name:"Subtitle QA",domain:"streaming",desc:"Watches for new SRT files and validates quality automatically",stack:"Google Drive SRT watcher → Make → Claude QA → Airtable error log + Slack",shipped:true,llm:"Claude Haiku",rag:false,evals:"Error detection accuracy",framework:"Make"},
-  {id:5,name:"Win-Back Campaign",domain:"streaming",desc:"Generates personalized re-engagement sequences for churned users",stack:"Airtable cancellation log → Make → Claude → Mailchimp journey",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Open rate + reactivation tracking",framework:"Make"},
-  {id:6,name:"Content Gap Analyzer",domain:"streaming",desc:"Identifies missing content categories by analyzing search queries",stack:"Query data → Make → Claude gap report → Notion",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Gap relevance scoring",framework:"Make"},
+  {id:5,name:"Win-Back Campaign",domain:"streaming",desc:"Generates personalized re-engagement sequences for churned users",stack:"Airtable cancellation log → Make → Claude → Mailchimp journey",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Open rate + reactivation tracking",framework:"Make"},
+  {id:6,name:"Content Gap Analyzer",domain:"streaming",desc:"Identifies missing content categories by analyzing search queries",stack:"Query data → Make → Claude gap report → Notion",shipped:true,llm:"Claude Sonnet",rag:true,evals:"Gap relevance scoring",framework:"Make"},
   {id:7,name:"A/B Test Analyzer",domain:"streaming",desc:"Reads experiment results from Sheets and generates analysis memos",stack:"Sheets trigger → Make → Claude analysis JSON → Notion memo + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Statistical conclusion accuracy",framework:"Make"},
   {id:8,name:"Licensing Monitor",domain:"streaming",desc:"Monitors content contracts and generates renewal briefs",stack:"Airtable contracts → Make Monday scheduler → Claude renewal brief → Gmail + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Date accuracy + brief completeness",framework:"Make"},
   {id:9,name:"Monday Weekly Digest",domain:"streaming",desc:"Automated weekly content digest delivered every Monday via email",stack:"Make Monday 7am → Google Sheets data → Claude 300-word digest → Gmail",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Content accuracy + formatting",framework:"Make"},
-  {id:10,name:"Rec Eval Agent",domain:"streaming",desc:"Evaluates recommendation engine outputs against viewing history",stack:"Rec API output → Make → Claude relevance scoring → Airtable report",shipped:false,llm:"Claude Sonnet",rag:true,evals:"NDCG + relevance scoring",framework:"Make"},
+  {id:10,name:"Rec Eval Agent",domain:"streaming",desc:"Evaluates recommendation engine outputs against viewing history",stack:"Rec API output → Make → Claude relevance scoring → Airtable report",shipped:true,llm:"Claude Sonnet",rag:true,evals:"NDCG + relevance scoring",framework:"Make"},
   // ── Ad Revenue (3) ──
   {id:12,name:"Ad Incrementality Brief",domain:"ads",desc:"Generates incrementality lift reports — deterministic stats calc with LLM narration",stack:"Experiment data → Python lift math → Claude narrative → Notion report",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Lift accuracy + narrative quality",framework:"Make + Python",flagship:true},
   {id:13,name:"Contextual Ad Slate Matcher",domain:"ads",desc:"Matches ad inventory to content context for optimal slate placement",stack:"Content metadata + ad catalog → Make → Claude matching → Airtable slate",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Relevance scoring + fill rate",framework:"Make"},
@@ -75,7 +79,7 @@ const AGENTS = [
   {id:15,name:"Grooming Bot",domain:"pm",desc:"Automates JIRA story grooming with acceptance criteria, edge cases & sizing",stack:"JIRA webhook → Make → Claude structured generation → JIRA update",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Output quality + edge case coverage",framework:"Make"},
   {id:16,name:"Research Synthesizer",domain:"pm",desc:"Structures research transcripts into product insights and recommendations",stack:"Google Drive transcripts → Make → Claude synthesis → Streamlit dashboard",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Insight relevance + completeness",framework:"Make + Streamlit"},
   {id:17,name:"PRD Studio",domain:"pm",desc:"Multi-mode PRD generator: brief → outline → full doc with edge cases and metrics",stack:"Notion brief → Make → Claude multi-pass → Notion PRD + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Completeness + section quality scoring",framework:"Make"},
-  {id:18,name:"Competitive Intel Hub",domain:"pm",desc:"Weekly competitive landscape digest with strategic implications",stack:"GitHub Actions Monday cron → Claude web_search → Resend digest",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Source coverage + insight quality",framework:"GitHub Actions"},
+  {id:18,name:"Competitive Intel Hub",domain:"pm",desc:"Weekly competitive landscape digest with strategic implications",stack:"GitHub Actions Monday cron → Claude web_search → Resend digest",shipped:true,llm:"Claude Sonnet",rag:true,evals:"Source coverage + insight quality",framework:"GitHub Actions"},
   {id:19,name:"PM Copilot",domain:"pm",desc:"Multi-agent orchestration for end-to-end PM decision support",stack:"CrewAI (Researcher/Writer/Reviewer) + Notion + Slack Bolt + Supabase memory",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Decision quality + agent coordination",framework:"CrewAI + Supabase",flagship:true},
   // ── Pharma (1) ──
   {id:20,name:"Clinical Trial Analyzer",domain:"pharma",desc:"Surfaces eligibility criteria & endpoint data from trial protocol PDFs",stack:"Google Drive PDFs → Make → Claude doc API with citations → Notion + Airtable log",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Extraction accuracy + completeness",framework:"Claude Doc API",flagship:true},
@@ -204,8 +208,8 @@ function StreamMindSection() {
                 boxShadow: isShipped ? `0 0 16px ${T.mintGlow}` : agent.flagship ? `0 0 12px rgba(244,160,179,0.08)` : "none",
                 position:"relative", display:"flex", flexDirection:"column",
               }}>
-              {isShipped && <div style={{ position:"absolute", top:-1, right:14, padding:"2px 8px", fontSize:10, fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", color:T.bg, background:T.mint, borderRadius:"0 0 5px 5px", letterSpacing:"0.06em", textTransform:"uppercase" }}>Shipped</div>}
-              {agent.flagship && !isShipped && <div style={{ position:"absolute", top:-1, right:14, padding:"2px 8px", fontSize:10, fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", color:T.bg, background:T.coral, borderRadius:"0 0 5px 5px", letterSpacing:"0.06em", textTransform:"uppercase" }}>Flagship</div>}
+              {isShipped && <div style={{ position:"absolute", top:-1, right: agent.flagship ? 80 : 14, padding:"2px 8px", fontSize:10, fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", color:T.bg, background:T.mint, borderRadius:"0 0 5px 5px", letterSpacing:"0.06em", textTransform:"uppercase" }}>Shipped</div>}
+              {agent.flagship && <div style={{ position:"absolute", top:-1, right:14, padding:"2px 8px", fontSize:10, fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", color:T.bg, background:T.coral, borderRadius:"0 0 5px 5px", letterSpacing:"0.06em", textTransform:"uppercase" }}>Flagship</div>}
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
                 <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:dc, fontWeight:500 }}>{DOMAIN_LABELS[agent.domain]}</span>
                 <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:T.textMuted }}>#{String(agent.id).padStart(2,"0")}</span>
