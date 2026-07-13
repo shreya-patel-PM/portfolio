@@ -14,13 +14,13 @@ const DOMAIN_LABELS = { streaming: "Streaming", pm: "Product Mgmt", pharma: "Pha
 const SHREYA_CONTEXT = `You are Shreya Patel's portfolio AI assistant. Answer questions conversationally and confidently — as her professional representative. Keep answers concise (2-4 sentences) unless detail is requested.
 
 CRITICAL RULES:
-- 14 agents are SHIPPED and live. The other 5 are PLANNED but NOT yet built.
+- 12 agents are SHIPPED and live. The other 4 are PLANNED but NOT yet built.
 - NEVER describe a planned agent as if it is complete or shipped.
 - If asked "what has she shipped," ONLY mention the 9 shipped agents below.
 
-CURRENT ROLE: Senior Product Manager at Eli Lilly (Cancer Clinical Platform). Building StreamMind — a 22-week project to ship 19 AI agents (reduced from 24 for depth over breadth). Currently Week 7 of 22.
+CURRENT ROLE: Senior Product Manager at Eli Lilly (Cancer Clinical Platform). Building StreamMind — a 22-week project to ship 16 AI agents. Currently Week 7 of 22.
 
-STREAMMIND: 19 agents total — 9 streaming, 3 ad-revenue, 5 PM, 1 pharma, 1 product (GhostCheck). 4 are FLAGSHIP-grade with full evals, architecture docs, guardrails, and cost analysis. Stack: Claude API, Make, Airtable, Notion, Supabase, CrewAI, Streamlit, Vercel, GitHub Actions, Next.js.
+STREAMMIND: 16 agents total — 8 streaming, 1 ad-revenue (flagship), 5 PM, 1 pharma, 1 product (GhostCheck). 4 are FLAGSHIP-grade with full evals, architecture docs, guardrails, and cost analysis. Stack: Claude API, Make, Airtable, Notion, Supabase, CrewAI, Streamlit, Vercel, GitHub Actions, Next.js.
 
 4 FLAGSHIPS (deep architecture + evals + guardrails):
 1. GhostCheck — Ghost job detection SaaS. Next.js + Supabase + Claude classification. Full F1 eval, adversarial benchmark, GUARDRAILS.md. SHIPPED.
@@ -40,11 +40,9 @@ STREAMMIND: 19 agents total — 9 streaming, 3 ad-revenue, 5 PM, 1 pharma, 1 pro
 9. PRD Studio (PM #3) — Multi-mode PRD generator: brief → outline → full doc. LLM: Claude Sonnet, Framework: Make. Shipped Week 12.
 10. GhostCheck (Product, FLAGSHIP) — Ghost job detection SaaS. LLM: Claude Sonnet, Framework: Next.js+Supabase. F1 eval + adversarial benchmark. Shipped Week 13.
 11. Win-Back Campaign (Streaming #5) — Re-engagement sequences for churned users. LLM: Claude Sonnet, Framework: Make. Shipped Week 14.
-12. Content Gap Analyzer (Streaming #6) — Missing content identification via search queries. LLM: Claude Sonnet, Framework: Make, RAG. Shipped Week 14.
-13. Rec Eval Agent (Streaming #10) — Recommendation engine output evaluation. LLM: Claude Sonnet, Framework: Make, RAG. Shipped Week 15.
-14. Competitive Intel Hub (PM #4) — Weekly competitive landscape digest. LLM: Claude Sonnet, Framework: GitHub Actions, RAG. Shipped Week 15.
+12. Competitive Intel Hub (PM #4) — Weekly competitive landscape digest. LLM: Claude Sonnet, Framework: GitHub Actions, RAG. Shipped Week 15.
 
-5 PLANNED (NOT yet built): target all 19 by September 2026.
+4 PLANNED (NOT yet built): Ad Incrementality Brief (flagship), PM Copilot (flagship), Clinical Trial Analyzer (flagship), Stakeholder Updates. Target all 16 by September 2026.
 
 WORK: Eli Lilly Sr PM Jan 2026–Present, T-Mobile Sr PO (27% adoption↑), J&J PO, CVS Aetna PM (100% migration), Salesforce PO (60K users, 40% adoption↑), MUFG PO, Stylekart Analyst.
 
@@ -61,7 +59,7 @@ CONTACT: shreyaishwarlalpatel@gmail.com, 415-604-6080, linkedin.com/in/shreeapat
 If unsure, say so and suggest emailing her directly.`;
 
 const AGENTS = [
-  // ── Streaming (9) ──
+  // ── Streaming (8) ──
   {id:1,name:"Content Tagging",domain:"streaming",desc:"Auto-tags catalog titles with genre, mood, and audience metadata via structured JSON",stack:"Airtable catalog → Make → Claude tags as JSON → Airtable writeback",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Tag accuracy vs human baseline",framework:"Make"},
   {id:2,name:"Copy Generator",domain:"streaming",desc:"Generates 6 marketing copy variants from a content brief",stack:"Notion brief → Make → Claude 6 variants JSON → Notion + Slack #copy-review",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Variant quality + tone consistency",framework:"Make"},
   {id:3,name:"Subtitle QA",domain:"streaming",desc:"Watches for new SRT files and validates quality automatically",stack:"Google Drive SRT watcher → Make → Claude QA → Airtable error log + Slack",shipped:true,llm:"Claude Haiku",rag:false,evals:"Error detection accuracy",framework:"Make"},
@@ -70,11 +68,8 @@ const AGENTS = [
   {id:7,name:"A/B Test Analyzer",domain:"streaming",desc:"Reads experiment results from Sheets and generates analysis memos",stack:"Sheets trigger → Make → Claude analysis JSON → Notion memo + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Statistical conclusion accuracy",framework:"Make"},
   {id:8,name:"Licensing Monitor",domain:"streaming",desc:"Monitors content contracts and generates renewal briefs",stack:"Airtable contracts → Make Monday scheduler → Claude renewal brief → Gmail + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Date accuracy + brief completeness",framework:"Make"},
   {id:9,name:"Monday Weekly Digest",domain:"streaming",desc:"Automated weekly content digest delivered every Monday via email",stack:"Make Monday 7am → Google Sheets data → Claude 300-word digest → Gmail",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Content accuracy + formatting",framework:"Make"},
-  {id:10,name:"Rec Eval Agent",domain:"streaming",desc:"Evaluates recommendation engine outputs against viewing history",stack:"Rec API output → Make → Claude relevance scoring → Airtable report",shipped:true,llm:"Claude Sonnet",rag:true,evals:"NDCG + relevance scoring",framework:"Make"},
-  // ── Ad Revenue (3) ──
+  // ── Ad Revenue (1 — Flagship only) ──
   {id:12,name:"Ad Incrementality Brief",domain:"ads",desc:"Generates incrementality lift reports — deterministic stats calc with LLM narration",stack:"Experiment data → Python lift math → Claude narrative → Notion report",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Lift accuracy + narrative quality",framework:"Make + Python",flagship:true},
-  {id:13,name:"Contextual Ad Slate Matcher",domain:"ads",desc:"Matches ad inventory to content context for optimal slate placement",stack:"Content metadata + ad catalog → Make → Claude matching → Airtable slate",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Relevance scoring + fill rate",framework:"Make"},
-  {id:14,name:"Ad Creative Variant Generator",domain:"ads",desc:"Generates ad copy variants tailored to content and audience segments",stack:"Campaign brief → Make → Claude variants → Slack #ad-review",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Brand safety + variant diversity",framework:"Make"},
   // ── PM (5) ──
   {id:15,name:"Grooming Bot",domain:"pm",desc:"Automates JIRA story grooming with acceptance criteria, edge cases & sizing",stack:"JIRA webhook → Make → Claude structured generation → JIRA update",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Output quality + edge case coverage",framework:"Make"},
   {id:16,name:"Research Synthesizer",domain:"pm",desc:"Structures research transcripts into product insights and recommendations",stack:"Google Drive transcripts → Make → Claude synthesis → Streamlit dashboard",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Insight relevance + completeness",framework:"Make + Streamlit"},
@@ -105,7 +100,7 @@ const jumpTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:"s
 function Hero() {
   const shipped = AGENTS.filter(a => a.shipped).length;
   const stats = [
-    { n:"19", label:"AI Agents", color:T.accent },
+    { n:"16", label:"AI Agents", color:T.accent },
     { n:`${shipped}`, label:"Shipped", color:T.mint },
     { n:"4", label:"Flagships", color:T.coral },
     { n:"10+", label:"Years PM", color:T.amber },
@@ -156,7 +151,7 @@ function StreamMindSection() {
   const [filter, setFilter] = useState("all");
   const [open, setOpen] = useState(null);
   const shipped = AGENTS.filter(a => a.shipped).length;
-  const filtered = filter === "all" ? AGENTS : AGENTS.filter(a => a.domain === filter);
+  const filtered = filter === "all" ? AGENTS : filter === "flagship" ? AGENTS.filter(a => a.flagship) : AGENTS.filter(a => a.domain === filter);
   const total = AGENTS.length;
   const pct = Math.round((shipped / total) * 100);
 
@@ -171,7 +166,7 @@ function StreamMindSection() {
     <section style={{ padding:"48px 24px", maxWidth:1080, margin:"0 auto" }} id="agents">
       <div style={{ textAlign:"center", marginBottom:28 }}>
         <div style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:13, fontWeight:600, color:T.accent, textTransform:"uppercase", letterSpacing:"0.15em", marginBottom:6 }}>StreamMind</div>
-        <h2 style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:"clamp(24px,4vw,36px)", fontWeight:700, color:T.text, letterSpacing:"-0.03em", margin:"0 0 8px" }}>19 AI Agents · 4 Flagships</h2>
+        <h2 style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:"clamp(24px,4vw,36px)", fontWeight:700, color:T.text, letterSpacing:"-0.03em", margin:"0 0 8px" }}>16 AI Agents · 4 Flagships</h2>
         <p style={{ fontFamily:"'Inter',sans-serif", fontSize:14, color:T.textSec, maxWidth:500, margin:"0 auto 18px" }}>
           trigger → data ingestion → LLM reasoning → structured output → action
         </p>
@@ -185,7 +180,12 @@ function StreamMindSection() {
           </div>
         </div>
         <div style={{ display:"flex", justifyContent:"center", gap:6, flexWrap:"wrap" }}>
-          {[{ id:"all", label:`All ${total}` }, ...Object.entries(DOMAIN_COLORS).map(([k]) => ({ id:k, label:`${DOMAIN_LABELS[k]} (${AGENTS.filter(a=>a.domain===k).length})` }))].map(f => (
+          {[
+            { id:"all", label:`All ${total}` },
+            { id:"streaming", label:`Streaming (${AGENTS.filter(a=>a.domain==="streaming").length})` },
+            { id:"pm", label:`Product Mgmt (${AGENTS.filter(a=>a.domain==="pm").length})` },
+            { id:"flagship", label:`Flagship (${AGENTS.filter(a=>a.flagship).length})` },
+          ].map(f => (
             <button key={f.id} onClick={() => { setFilter(f.id); setOpen(null); }}
               style={{ padding:"6px 14px", fontSize:12, fontWeight:filter===f.id?600:400, color:filter===f.id?T.text:T.textSec, background:filter===f.id?T.elevated:T.surface, border:`1px solid ${filter===f.id?T.borderLight:T.border}`, borderRadius:100, cursor:"pointer", fontFamily:"'Inter',sans-serif" }}>
               {f.label}
