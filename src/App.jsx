@@ -14,7 +14,7 @@ const DOMAIN_LABELS = { streaming: "Streaming", pm: "Product Mgmt", pharma: "Pha
 const SHREYA_CONTEXT = `You are Shreya Patel's portfolio AI assistant. Answer questions conversationally and confidently — as her professional representative. Keep answers concise (2-4 sentences) unless detail is requested.
 
 CRITICAL RULES:
-- 12 agents are SHIPPED and live. The other 4 are PLANNED but NOT yet built.
+- 13 agents are SHIPPED and live. The other 3 are PLANNED but NOT yet built.
 - NEVER describe a planned agent as if it is complete or shipped.
 - If asked "what has she shipped," ONLY mention the 9 shipped agents below.
 
@@ -26,7 +26,7 @@ STREAMMIND: 16 agents total — 8 streaming, 1 ad-revenue (flagship), 5 PM, 1 ph
 1. GhostCheck — Ghost job detection SaaS. Next.js + Supabase + Claude classification. Full F1 eval, adversarial benchmark, GUARDRAILS.md. SHIPPED.
 2. Clinical Trial Analyzer (Pharma) — RAG over trial PDFs. Guardrails for regulated domain.
 3. Ad Incrementality Brief (Streaming #19) — Deterministic lift math + LLM narration. "When NOT to use an agent" example.
-4. PM Copilot (PM #5) — CrewAI multi-agent (Researcher/Writer/Reviewer) + Supabase memory + Slack Bolt.
+4. PM Copilot (PM #5) — CrewAI multi-agent (Researcher/Writer/Reviewer) + Supabase memory + Slack Bolt. SHIPPED. 3.69/5.0 rubric benchmark.
 
 3 SHIPPED AGENTS:
 1. Grooming Bot (PM #1) — JIRA story grooming. LLM: Claude Sonnet, Framework: Make, No RAG. Shipped Week 3.
@@ -41,8 +41,9 @@ STREAMMIND: 16 agents total — 8 streaming, 1 ad-revenue (flagship), 5 PM, 1 ph
 10. GhostCheck (Product, FLAGSHIP) — Ghost job detection SaaS. LLM: Claude Sonnet, Framework: Next.js+Supabase. F1 eval + adversarial benchmark. Shipped Week 13.
 11. Win-Back Campaign (Streaming #5) — Re-engagement sequences for churned users. LLM: Claude Sonnet, Framework: Make. Shipped Week 14.
 12. Competitive Intel Hub (PM #4) — Weekly competitive landscape digest. LLM: Claude Sonnet, Framework: GitHub Actions, RAG. Shipped Week 15.
+13. PM Copilot (PM #5, FLAGSHIP) — CrewAI multi-agent: Researcher → Analyst → Writer. 3.69/5.0 rubric benchmark. Structural HITL checkpoint. Shipped Week 16.
 
-4 PLANNED (NOT yet built): Ad Incrementality Brief (flagship), PM Copilot (flagship), Clinical Trial Analyzer (flagship), Stakeholder Updates. Target all 16 by September 2026.
+3 PLANNED (NOT yet built): Ad Incrementality Brief (flagship), Clinical Trial Analyzer (flagship), Stakeholder Updates. Target all 16 by September 2026.
 
 WORK: Eli Lilly Sr PM Jan 2026–Present, T-Mobile Sr PO (27% adoption↑), J&J PO, CVS Aetna PM (100% migration), Salesforce PO (60K users, 40% adoption↑), MUFG PO, Stylekart Analyst.
 
@@ -69,17 +70,61 @@ const AGENTS = [
   {id:8,name:"Licensing Monitor",domain:"streaming",desc:"Monitors content contracts and generates renewal briefs",stack:"Airtable contracts → Make Monday scheduler → Claude renewal brief → Gmail + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Date accuracy + brief completeness",framework:"Make"},
   {id:9,name:"Monday Weekly Digest",domain:"streaming",desc:"Automated weekly content digest delivered every Monday via email",stack:"Make Monday 7am → Google Sheets data → Claude 300-word digest → Gmail",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Content accuracy + formatting",framework:"Make"},
   // ── Ad Revenue (1 — Flagship only) ──
-  {id:12,name:"Ad Incrementality Brief",domain:"ads",desc:"Generates incrementality lift reports — deterministic stats calc with LLM narration",stack:"Experiment data → Python lift math → Claude narrative → Notion report",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Lift accuracy + narrative quality",framework:"Make + Python",flagship:true},
+  {id:12,name:"Ad Incrementality Brief",domain:"ads",desc:"Generates incrementality lift reports — deterministic stats calc with LLM narration",stack:"Experiment data → Python lift math → Claude narrative → Notion report",shipped:false,llm:"Claude Sonnet",rag:false,evals:"Lift accuracy + narrative quality",framework:"Make + Python",flagship:true,
+    details:{
+      quadrant:"Exact output · multi-component",
+      pattern:"Deterministic stats in code + LLM narrative, number-grounding gate",
+      failure:"Drifted number or overclaimed win in a sales brief",
+      evalMethod:"Unit tests (exact) + number-match parse + significance-honesty scenarios",
+      headline:"Number-match pass rate target: 100%",
+      guardrail:"Reject-over-repair: mismatched brief is killed, not fixed",
+      whenNot:"When not to use an LLM — math is code, language is the model",
+      stakes:"Customer-facing sales; one wrong number kills trust",
+      oneLiner:"The LLM never touches a number. Math is code; the model only narrates."
+    }},
   // ── PM (5) ──
   {id:15,name:"Grooming Bot",domain:"pm",desc:"Automates JIRA story grooming with acceptance criteria, edge cases & sizing",stack:"JIRA webhook → Make → Claude structured generation → JIRA update",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Output quality + edge case coverage",framework:"Make"},
   {id:16,name:"Research Synthesizer",domain:"pm",desc:"Structures research transcripts into product insights and recommendations",stack:"Google Drive transcripts → Make → Claude synthesis → Streamlit dashboard",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Insight relevance + completeness",framework:"Make + Streamlit"},
   {id:17,name:"PRD Studio",domain:"pm",desc:"Multi-mode PRD generator: brief → outline → full doc with edge cases and metrics",stack:"Notion brief → Make → Claude multi-pass → Notion PRD + Slack",shipped:true,llm:"Claude Sonnet",rag:false,evals:"Completeness + section quality scoring",framework:"Make"},
   {id:18,name:"Competitive Intel Hub",domain:"pm",desc:"Weekly competitive landscape digest with strategic implications",stack:"GitHub Actions Monday cron → Claude web_search → Resend digest",shipped:true,llm:"Claude Sonnet",rag:true,evals:"Source coverage + insight quality",framework:"GitHub Actions"},
-  {id:19,name:"PM Copilot",domain:"pm",desc:"Multi-agent orchestration for end-to-end PM decision support",stack:"CrewAI (Researcher/Writer/Reviewer) + Notion + Slack Bolt + Supabase memory",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Decision quality + agent coordination",framework:"CrewAI + Supabase",flagship:true},
+  {id:19,name:"PM Copilot",domain:"pm",desc:"Multi-agent orchestration for end-to-end PM decision support",stack:"CrewAI (Researcher/Writer/Reviewer) + Notion + Slack Bolt + Supabase memory",shipped:true,llm:"Claude Sonnet",rag:true,evals:"Decision quality + agent coordination",framework:"CrewAI + Supabase",flagship:true,
+    details:{
+      quadrant:"Generative output · multi-component",
+      pattern:"Sequential CrewAI crew: Researcher → Analyst → Writer → human review",
+      failure:"Invented scope, untestable acceptance criteria",
+      evalMethod:"LLM-as-judge rubric (clarity, testability, scope, completeness, grounding) + human cross-check",
+      headline:"3.69 / 5.0 rubric benchmark — scope fidelity 2.66 documented as honest gap",
+      guardrail:"Structural HITL checkpoint — agent proposes, PM decides",
+      whenNot:"When not to use a crew — ablation-proven: single call wins on speed; crew wins on adversarial asks",
+      stakes:"Internal tooling; rework cost",
+      oneLiner:"Gather, scope, and write are three different jobs with different failure modes — so it's a crew, not a prompt."
+    }},
   // ── Pharma (1) ──
-  {id:20,name:"Clinical Trial Analyzer",domain:"pharma",desc:"Surfaces eligibility criteria & endpoint data from trial protocol PDFs",stack:"Google Drive PDFs → Make → Claude doc API with citations → Notion + Airtable log",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Extraction accuracy + completeness",framework:"Claude Doc API",flagship:true},
+  {id:20,name:"Clinical Trial Analyzer",domain:"pharma",desc:"Surfaces eligibility criteria & endpoint data from trial protocol PDFs",stack:"Google Drive PDFs → Make → Claude doc API with citations → Notion + Airtable log",shipped:false,llm:"Claude Sonnet",rag:true,evals:"Extraction accuracy + completeness",framework:"Claude Doc API",flagship:true,
+    details:{
+      quadrant:"Generative output · single model",
+      pattern:"Whole-PDF-in-context (document API) + prompt caching, citation-gated",
+      failure:"Fabricated citation feeds a regulated decision",
+      evalMethod:"Faithfulness, citation correctness, refusal accuracy on golden Q&A set",
+      headline:"Hallucination rate target: zero fabricated citations",
+      guardrail:"Programmatic citation validation + medical-advice refusal",
+      whenNot:"When not to RAG — long-context wins for small corpora",
+      stakes:"Regulated pharma; PHI redaction; audit trail",
+      oneLiner:"Every claim is cited, and a programmatic check confirms the cited text exists in the source."
+    }},
   // ── Product (1) ──
-  {id:21,name:"GhostCheck",domain:"product",desc:"Ghost job detection SaaS — classifies listings as real vs ghost with F1-scored evals",stack:"Next.js + Supabase + Claude classification → adversarial benchmark (75 examples)",shipped:true,llm:"Claude Sonnet",rag:false,evals:"F1 score at threshold 0.60 + adversarial benchmark",framework:"Next.js + Supabase",flagship:true},
+  {id:21,name:"GhostCheck",domain:"product",desc:"Ghost job detection SaaS — classifies listings as real vs ghost with F1-scored evals",stack:"Next.js + Supabase + Claude classification → adversarial benchmark (75 examples)",shipped:true,llm:"Claude Sonnet",rag:false,evals:"F1 score at threshold 0.60 + adversarial benchmark",framework:"Next.js + Supabase",flagship:true,
+    details:{
+      quadrant:"Exact output · single model",
+      pattern:"Calibrated classifier with explainable signal breakdown",
+      failure:"False positive hides a real opportunity",
+      evalMethod:"Precision / recall / F1 on 75-case adversarial benchmark; PR-curve threshold walk",
+      headline:"F1 0.93 @ 0.60 threshold",
+      guardrail:"Locked operating point + amber caution band (30–59%)",
+      whenNot:"When not to trust one opaque score — expose the signals",
+      stakes:"Consumer trust; real SaaS revenue ($29/mo)",
+      oneLiner:"I walked the PR curve on an adversarial benchmark and locked the threshold where false positives stop being acceptable."
+    }},
 ];
 
 const EXPERIENCE = [
@@ -232,6 +277,49 @@ function StreamMindSection() {
                     <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:T.accent, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>Architecture</div>
                     <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:12, color:T.accent, lineHeight:1.6 }}>{agent.stack}</div>
                   </div>
+                  {agent.flagship && agent.details && (
+                    <div style={{ marginTop:8, padding:"14px 16px", background:`linear-gradient(135deg, ${T.surface}, ${T.card})`, borderRadius:8, border:`1px solid ${T.coral}25` }}>
+                      <div style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:12, fontWeight:600, color:T.coral, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:10 }}>Flagship Deep Dive</div>
+                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
+                        <div>
+                          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Quadrant</div>
+                          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.text, lineHeight:1.4 }}>{agent.details.quadrant}</div>
+                        </div>
+                        <div>
+                          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Stakes</div>
+                          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.text, lineHeight:1.4 }}>{agent.details.stakes}</div>
+                        </div>
+                      </div>
+                      <div style={{ marginBottom:8 }}>
+                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Core Pattern</div>
+                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.pattern}</div>
+                      </div>
+                      <div style={{ marginBottom:8 }}>
+                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Failure Mode Defended</div>
+                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.failure}</div>
+                      </div>
+                      <div style={{ marginBottom:8 }}>
+                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Eval Methodology</div>
+                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.evalMethod}</div>
+                      </div>
+                      <div style={{ padding:"8px 12px", background:`${T.mint}10`, border:`1px solid ${T.mint}20`, borderRadius:6, marginBottom:8 }}>
+                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.mint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Headline Metric</div>
+                        <div style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:14, fontWeight:600, color:T.mint }}>{agent.details.headline}</div>
+                      </div>
+                      <div style={{ marginBottom:8 }}>
+                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Signature Guardrail</div>
+                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.guardrail}</div>
+                      </div>
+                      <div style={{ marginBottom:8 }}>
+                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>"When Not To" Decision</div>
+                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5, fontStyle:"italic" }}>{agent.details.whenNot}</div>
+                      </div>
+                      <div style={{ padding:"10px 14px", background:`${T.accent}08`, border:`1px solid ${T.accent}20`, borderRadius:6 }}>
+                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.accent, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>Interview One-Liner</div>
+                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:13, color:T.text, lineHeight:1.5, fontStyle:"italic" }}>"{agent.details.oneLiner}"</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
