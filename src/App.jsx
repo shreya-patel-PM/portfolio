@@ -195,6 +195,7 @@ function Hero() {
 function StreamMindSection() {
   const [filter, setFilter] = useState("all");
   const [open, setOpen] = useState(null);
+  const [modalAgent, setModalAgent] = useState(null);
   const shipped = AGENTS.filter(a => a.shipped).length;
   const filtered = filter === "all" ? AGENTS : filter === "flagship" ? AGENTS.filter(a => a.flagship) : AGENTS.filter(a => a.domain === filter);
   const total = AGENTS.length;
@@ -278,47 +279,12 @@ function StreamMindSection() {
                     <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:12, color:T.accent, lineHeight:1.6 }}>{agent.stack}</div>
                   </div>
                   {agent.flagship && agent.details && (
-                    <div style={{ marginTop:8, padding:"14px 16px", background:`linear-gradient(135deg, ${T.surface}, ${T.card})`, borderRadius:8, border:`1px solid ${T.coral}25` }}>
-                      <div style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:12, fontWeight:600, color:T.coral, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:10 }}>Flagship Deep Dive</div>
-                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
-                        <div>
-                          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Quadrant</div>
-                          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.text, lineHeight:1.4 }}>{agent.details.quadrant}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Stakes</div>
-                          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.text, lineHeight:1.4 }}>{agent.details.stakes}</div>
-                        </div>
-                      </div>
-                      <div style={{ marginBottom:8 }}>
-                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Core Pattern</div>
-                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.pattern}</div>
-                      </div>
-                      <div style={{ marginBottom:8 }}>
-                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Failure Mode Defended</div>
-                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.failure}</div>
-                      </div>
-                      <div style={{ marginBottom:8 }}>
-                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Eval Methodology</div>
-                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.evalMethod}</div>
-                      </div>
-                      <div style={{ padding:"8px 12px", background:`${T.mint}10`, border:`1px solid ${T.mint}20`, borderRadius:6, marginBottom:8 }}>
-                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.mint, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Headline Metric</div>
-                        <div style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:14, fontWeight:600, color:T.mint }}>{agent.details.headline}</div>
-                      </div>
-                      <div style={{ marginBottom:8 }}>
-                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>Signature Guardrail</div>
-                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5 }}>{agent.details.guardrail}</div>
-                      </div>
-                      <div style={{ marginBottom:8 }}>
-                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:2 }}>"When Not To" Decision</div>
-                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:12, color:T.textSec, lineHeight:1.5, fontStyle:"italic" }}>{agent.details.whenNot}</div>
-                      </div>
-                      <div style={{ padding:"10px 14px", background:`${T.accent}08`, border:`1px solid ${T.accent}20`, borderRadius:6 }}>
-                        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:T.accent, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>Interview One-Liner</div>
-                        <div style={{ fontFamily:"'Inter',sans-serif", fontSize:13, color:T.text, lineHeight:1.5, fontStyle:"italic" }}>"{agent.details.oneLiner}"</div>
-                      </div>
-                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); setModalAgent(agent); }}
+                      style={{ marginTop:8, width:"100%", padding:"10px", fontSize:12, fontWeight:600, fontFamily:"'Inter',sans-serif", color:T.coral, background:`${T.coral}10`, border:`1px solid ${T.coral}30`, borderRadius:6, cursor:"pointer", transition:"all 0.15s" }}
+                      onMouseEnter={e => { e.currentTarget.style.background=`${T.coral}20`; }}
+                      onMouseLeave={e => { e.currentTarget.style.background=`${T.coral}10`; }}>
+                      View Flagship Deep Dive →
+                    </button>
                   )}
                 </div>
               )}
@@ -332,6 +298,71 @@ function StreamMindSection() {
           {STACK.map(t => <span key={t} style={{ padding:"4px 12px", fontSize:11, fontFamily:"'JetBrains Mono',monospace", color:T.textSec, background:T.surface, border:`1px solid ${T.border}`, borderRadius:100 }}>{t}</span>)}
         </div>
       </div>
+
+      {/* Flagship Deep Dive Modal */}
+      {modalAgent && modalAgent.details && (
+        <div onClick={() => setModalAgent(null)}
+          style={{ position:"fixed", inset:0, zIndex:300, background:"rgba(0,0,0,0.7)", backdropFilter:"blur(4px)", display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
+          <div onClick={e => e.stopPropagation()}
+            style={{ width:"min(640px, 100%)", maxHeight:"85vh", overflowY:"auto", background:T.card, border:`1px solid ${T.borderLight}`, borderRadius:16, boxShadow:`0 12px 60px rgba(0,0,0,0.5), 0 0 40px ${T.glow}` }}>
+            <div style={{ padding:"20px 24px 16px", borderBottom:`1px solid ${T.border}`, display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+              <div>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
+                  <span style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:20, fontWeight:700, color:T.text }}>{modalAgent.name}</span>
+                  <span style={{ padding:"2px 8px", fontSize:10, fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", color:T.bg, background:T.coral, borderRadius:4, textTransform:"uppercase" }}>Flagship</span>
+                  {modalAgent.shipped && <span style={{ padding:"2px 8px", fontSize:10, fontWeight:700, fontFamily:"'Space Grotesk',sans-serif", color:T.bg, background:T.mint, borderRadius:4, textTransform:"uppercase" }}>Shipped</span>}
+                </div>
+                <div style={{ fontFamily:"'Inter',sans-serif", fontSize:13, color:T.textSec }}>{modalAgent.desc}</div>
+              </div>
+              <button onClick={() => setModalAgent(null)} style={{ background:"none", border:"none", color:T.textMuted, fontSize:20, cursor:"pointer", padding:"0 4px", flexShrink:0 }}>✕</button>
+            </div>
+            <div style={{ padding:"20px 24px" }}>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:16 }}>
+                <div style={{ padding:"14px 16px", background:T.surface, borderRadius:8, border:`1px solid ${T.border}` }}>
+                  <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:T.coral, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Competency Quadrant</div>
+                  <div style={{ fontFamily:"'Inter',sans-serif", fontSize:14, fontWeight:600, color:T.text }}>{modalAgent.details.quadrant}</div>
+                </div>
+                <div style={{ padding:"14px 16px", background:T.surface, borderRadius:8, border:`1px solid ${T.border}` }}>
+                  <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:T.coral, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Stakes Profile</div>
+                  <div style={{ fontFamily:"'Inter',sans-serif", fontSize:14, fontWeight:600, color:T.text }}>{modalAgent.details.stakes}</div>
+                </div>
+              </div>
+              <div style={{ padding:"16px 20px", background:`${T.mint}08`, border:`1px solid ${T.mint}20`, borderRadius:10, marginBottom:16, textAlign:"center" }}>
+                <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:T.mint, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:4 }}>Headline Metric</div>
+                <div style={{ fontFamily:"'Space Grotesk',sans-serif", fontSize:20, fontWeight:700, color:T.mint }}>{modalAgent.details.headline}</div>
+              </div>
+              <div style={{ display:"grid", gap:12, marginBottom:16 }}>
+                {[
+                  { label:"Core Pattern", value:modalAgent.details.pattern, color:T.purple },
+                  { label:"Failure Mode Defended", value:modalAgent.details.failure, color:T.accent },
+                  { label:"Eval Methodology", value:modalAgent.details.evalMethod, color:T.amber },
+                  { label:"Signature Guardrail", value:modalAgent.details.guardrail, color:T.mint },
+                ].map((item, i) => (
+                  <div key={i} style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
+                    <div style={{ width:3, flexShrink:0, alignSelf:"stretch", borderRadius:2, background:item.color, marginTop:2 }} />
+                    <div>
+                      <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:item.color, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>{item.label}</div>
+                      <div style={{ fontFamily:"'Inter',sans-serif", fontSize:13, color:T.textSec, lineHeight:1.6 }}>{item.value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ padding:"14px 16px", background:T.surface, borderRadius:8, border:`1px solid ${T.border}`, marginBottom:12 }}>
+                <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:T.textMuted, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>"When Not To" Decision</div>
+                <div style={{ fontFamily:"'Inter',sans-serif", fontSize:13, color:T.textSec, lineHeight:1.6, fontStyle:"italic" }}>{modalAgent.details.whenNot}</div>
+              </div>
+              <div style={{ padding:"16px 20px", background:`${T.accent}08`, border:`1px solid ${T.accent}25`, borderRadius:10, marginBottom:12 }}>
+                <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:T.accent, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:6 }}>Interview One-Liner</div>
+                <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, color:T.text, lineHeight:1.6, fontStyle:"italic" }}>"{modalAgent.details.oneLiner}"</div>
+              </div>
+              <div style={{ padding:"12px 16px", background:T.surface, borderRadius:8, border:`1px solid ${T.border}` }}>
+                <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:T.accent, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>Architecture</div>
+                <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:13, color:T.accent, lineHeight:1.6 }}>{modalAgent.stack}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
