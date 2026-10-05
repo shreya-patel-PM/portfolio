@@ -155,8 +155,8 @@ function Hero() {
   ];
   const jumps = [
     { label:"Experience", target:"career" },
-    { label:"AI Agents", target:"agents" },
     { label:"Deep Dive", target:"deepdive" },
+    { label:"AI Agents", target:"agents" },
     { label:"Skills", target:"skills" },
   ];
   return (
@@ -663,10 +663,10 @@ export default function Portfolio() {
       <Hero />
       <div style={{ maxWidth:100, margin:"0 auto", height:1, background:`linear-gradient(90deg, transparent, ${T.purple}, transparent)` }} />
       <CareerSection />
-      <div style={{ maxWidth:100, margin:"0 auto", height:1, background:`linear-gradient(90deg, transparent, ${T.accent}, transparent)` }} />
-      <StreamMindSection />
       <div style={{ maxWidth:100, margin:"0 auto", height:1, background:`linear-gradient(90deg, transparent, #00A1E0, transparent)` }} />
       <DeepDiveSection />
+      <div style={{ maxWidth:100, margin:"0 auto", height:1, background:`linear-gradient(90deg, transparent, ${T.accent}, transparent)` }} />
+      <StreamMindSection />
       <div style={{ maxWidth:100, margin:"0 auto", height:1, background:`linear-gradient(90deg, transparent, ${T.amber}, transparent)` }} />
       <SkillsSection />
       <footer style={{ padding:"28px 24px", textAlign:"center", borderTop:`1px solid ${T.border}` }}>
